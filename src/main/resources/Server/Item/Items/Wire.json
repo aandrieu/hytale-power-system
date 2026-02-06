@@ -1,0 +1,55 @@
+{
+  "TranslationProperties": {
+    "Name": "Basic Wire"
+  },
+  "Icon": "Icons/ItemsGenerated/Debug_Block.png",
+  "Categories": [],
+  "Quality": "Developer",
+  "BlockType": {
+    "Material": "Solid",
+    "DrawType": "Cube",
+    "VariantRotation": "Debug",
+    "Textures": [
+      {
+        "All": "BlockTextures/Wire0.png"
+      }
+    ],
+    "ParticleColor": "#0000f4"
+  },
+  "PlayerAnimationsId": "Block",
+  "Tags": {
+    "Type": [
+      "Debug"
+    ]
+  },
+  "State": {
+    "Definitions": {
+      "NoPower": {
+        "CustomModelTexture": {
+          "Texture": "BlockTextures/Wire0.png"
+        }
+      },
+      "PowerLow": {
+        "CustomModelTexture": {
+          "Texture": "BlockTextures/Wire5.png"
+        }
+      },
+      "PowerMedium": {
+        "CustomModelTexture": {
+          "Texture": "BlockTextures/Wire10.png"
+        }
+      },
+      "PowerHigh": {
+        "CustomModelTexture": {
+          "Texture": "BlockTextures/Wire15.png"
+        }
+      }
+    }
+  },
+  "BlockEntity": {
+    "IsBlockComponent": true,
+    "Components": {
+      "PowerLevelComponent": {}
+    }
+  }
+}

@@ -66,6 +66,19 @@ public class PowerLevelComponent implements Component<ChunkStore> {
         this.next = next;
     }
 
+    public String getState() {
+        int current = this.current;
+        if (current == 0) {
+            return "NoPower";
+        } else if (current <= 5) {
+            return "PowerLow";
+        } else if (current <= 10) {
+            return "PowerMedium";
+        } else {
+            return "PowerHigh";
+        }
+    }
+
     @NullableDecl
     @Override
     public Component<ChunkStore> clone() {

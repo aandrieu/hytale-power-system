@@ -1,5 +1,9 @@
 package com.pix.plugin.systems;
 
+import com.hypixel.hytale.math.util.ChunkUtil;
+import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
+import com.hypixel.hytale.server.core.modules.block.BlockModule;
+import com.hypixel.hytale.server.core.universe.world.chunk.WorldChunk;
 import com.pix.plugin.components.PowerLevelComponent;
 import com.hypixel.hytale.component.*;
 import com.hypixel.hytale.component.dependency.Dependency;
@@ -44,6 +48,8 @@ public class PowerCommitSystem extends EntityTickingSystem<ChunkStore> {
 		}
 
 		power.setCurrent(power.getNext());
+
+		setWireState(index, archetypeChunk, store, power.getState());
 	}
 
 	@NullableDecl
@@ -58,5 +64,37 @@ public class PowerCommitSystem extends EntityTickingSystem<ChunkStore> {
 		return Set.of(
 				new SystemDependency<>(Order.AFTER, PowerPropagationSystem.class)
 		);
+	}
+
+	private void setWireState(
+			int index,
+			@NonNullDecl ArchetypeChunk<ChunkStore> archetypeChunk,
+			@NonNullDecl Store<ChunkStore> store,
+			String newState
+	) {
+		var info = archetypeChunk.getComponent(index, BlockModule.BlockStateInfo.getComponentType());
+		if (info == null) {
+			return;
+		}
+
+		var chunkRef = info.getChunkRef();
+		var worldChunk = store.getComponent(chunkRef, WorldChunk.getComponentType());
+		if (worldChunk == null) {
+			return;
+		}
+
+		int x = ChunkUtil.xFromBlockInColumn(info.getIndex());
+		int y = ChunkUtil.yFromBlockInColumn(info.getIndex());
+		int z = ChunkUtil.zFromBlockInColumn(info.getIndex());
+
+		int blockId = worldChunk.getBlock(x, y, z);
+		BlockType blockType = BlockType.getAssetMap().getAsset(blockId);
+
+		if (blockType == null || !blockType.getId().equals("Wire")) {
+			return;
+		}
+
+		// Inspired from BlockSetStateCommand. Is it okay?
+		worldChunk.setBlockInteractionState(x, y, z, blockType, newState, true);
 	}
 }

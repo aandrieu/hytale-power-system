@@ -31,13 +31,30 @@ public class PowerInitSystem extends RefSystem<ChunkStore> {
 		return this.query;
 	}
 
-
 	@Override
 	public void onEntityAdded(
 			@NonNullDecl Ref<ChunkStore> ref,
 			@NonNullDecl AddReason addReason,
 			@NonNullDecl Store<ChunkStore> store,
 			@NonNullDecl CommandBuffer<ChunkStore> commandBuffer
+	) {
+		setBlockTicking(ref, commandBuffer, true);
+	}
+
+	@Override
+	public void onEntityRemove(
+			@NonNullDecl Ref<ChunkStore> ref,
+			@NonNullDecl RemoveReason removeReason,
+			@NonNullDecl Store<ChunkStore> store,
+			@NonNullDecl CommandBuffer<ChunkStore> commandBuffer
+	) {
+		setBlockTicking(ref, commandBuffer, false);
+	}
+
+	private void setBlockTicking(
+			@NonNullDecl Ref<ChunkStore> ref,
+			@NonNullDecl CommandBuffer<ChunkStore> commandBuffer,
+			boolean enableTicking
 	) {
 		var info = commandBuffer.getComponent(ref, BlockModule.BlockStateInfo.getComponentType());
 		if (info == null) {
@@ -58,16 +75,6 @@ public class PowerInitSystem extends RefSystem<ChunkStore> {
 			return;
 		}
 
-		worldChunk.setTicking(x, y, z, true);
-	}
-
-	@Override
-	public void onEntityRemove(
-			@NonNullDecl Ref<ChunkStore> ref,
-			@NonNullDecl RemoveReason removeReason,
-			@NonNullDecl Store<ChunkStore> store,
-			@NonNullDecl CommandBuffer<ChunkStore> commandBuffer
-	) {
-
+		worldChunk.setTicking(x, y, z, enableTicking);
 	}
 }

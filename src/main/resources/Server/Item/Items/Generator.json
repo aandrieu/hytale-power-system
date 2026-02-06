@@ -1,0 +1,35 @@
+{
+  "TranslationProperties": {
+    "Name": "Basic Generator"
+  },
+  "Icon": "Icons/ItemsGenerated/Debug_Block.png",
+  "Categories": [],
+  "Quality": "Developer",
+  "BlockType": {
+    "Material": "Solid",
+    "DrawType": "Cube",
+    "VariantRotation": "Debug",
+    "Textures": [
+      {
+        "All": "BlockTextures/Generator.png"
+      }
+    ],
+    "ParticleColor": "#0000f4"
+  },
+  "PlayerAnimationsId": "Block",
+  "Tags": {
+    "Type": [
+      "Debug"
+    ]
+  },
+  "BlockEntity": {
+    "IsBlockComponent": true,
+    "Components": {
+      "PowerSourceComponent": {
+        "OutputPowerLevel": 15,
+        "IsActivePower": true
+      },
+      "PowerLevelComponent": {}
+    }
+  }
+}
