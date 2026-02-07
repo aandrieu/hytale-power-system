@@ -59,7 +59,7 @@ public class PowerLevelComponent implements Component<ChunkStore> {
     }
 
     public int getNext() {
-        return this.current;
+        return this.next;
     }
 
     public void setNext(int next) {

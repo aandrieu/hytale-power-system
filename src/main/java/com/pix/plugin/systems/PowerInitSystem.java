@@ -19,10 +19,7 @@ public class PowerInitSystem extends RefSystem<ChunkStore> {
 			ComponentType<ChunkStore, PowerLevelComponent> powerLevelComponentType
 	) {
 		this.powerLevelComponentType = powerLevelComponentType;
-		this.query = Query.and(
-				BlockModule.BlockStateInfo.getComponentType(),
-				this.powerLevelComponentType
-		);
+		this.query = this.powerLevelComponentType;
 	}
 
 	@NullableDecl

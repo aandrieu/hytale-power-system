@@ -7,49 +7,68 @@
   "Quality": "Developer",
   "BlockType": {
     "Material": "Solid",
-    "DrawType": "Cube",
+    "DrawType": "Model",
     "VariantRotation": "Debug",
-    "Textures": [
+    "ParticleColor": "#0000f4",
+    "CustomModel": "Blocks/Wire/Wire.blockymodel",
+    "CustomModelTexture": [
       {
-        "All": "BlockTextures/Wire0.png"
+        "Texture": "Blocks/Wire/Wire0.png",
+        "Weight": 1
       }
     ],
-    "ParticleColor": "#0000f4"
+    "Gathering": {
+      "Breaking": {
+        "GatherType": "Soil",
+        "ItemId": "Wire"
+      }
+    },
+    "State": {
+      "Definitions": {
+        "NoPower": {
+          "CustomModelTexture": [
+            {
+              "Texture": "Blocks/Wire/Wire0.png"
+            }
+          ]
+        },
+        "PowerLow": {
+          "CustomModelTexture": [
+            {
+              "Texture": "Blocks/Wire/Wire5.png"
+            }
+          ]
+        },
+        "PowerMedium": {
+          "CustomModelTexture": [
+            {
+              "Texture": "Blocks/Wire/Wire10.png"
+            }
+          ]
+        },
+        "PowerHigh": {
+          "CustomModelTexture": [
+            {
+              "Texture": "Blocks/Wire/Wire15.png"
+            }
+          ]
+        }
+      }
+    },
+    "BlockEntity": {
+      "Components": {
+        "PowerWireComponent":  {},
+        "PowerLevelComponent": {
+          "CurrentPowerLevel": 0,
+          "NextPowerLevel": 0
+        }
+      }
+    }
   },
   "PlayerAnimationsId": "Block",
   "Tags": {
     "Type": [
       "Debug"
     ]
-  },
-  "State": {
-    "Definitions": {
-      "NoPower": {
-        "CustomModelTexture": {
-          "Texture": "BlockTextures/Wire0.png"
-        }
-      },
-      "PowerLow": {
-        "CustomModelTexture": {
-          "Texture": "BlockTextures/Wire5.png"
-        }
-      },
-      "PowerMedium": {
-        "CustomModelTexture": {
-          "Texture": "BlockTextures/Wire10.png"
-        }
-      },
-      "PowerHigh": {
-        "CustomModelTexture": {
-          "Texture": "BlockTextures/Wire15.png"
-        }
-      }
-    }
-  },
-  "BlockEntity": {
-    "IsBlockComponent": true,
-    "Components": {
-      "PowerLevelComponent": {}
-    }
   }
 }

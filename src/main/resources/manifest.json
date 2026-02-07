@@ -6,5 +6,6 @@
   "Dependencies": {
     "Hytale:BlockModule": "*"
   },
+  "DisabledByDefault": false,
   "IncludesAssetPack": true
 }

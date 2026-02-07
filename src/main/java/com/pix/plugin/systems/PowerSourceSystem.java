@@ -1,6 +1,5 @@
 package com.pix.plugin.systems;
 
-import com.pix.plugin.PowerPlugin;
 import com.pix.plugin.components.PowerLevelComponent;
 import com.pix.plugin.components.PowerSourceComponent;
 import com.hypixel.hytale.component.*;
@@ -44,15 +43,11 @@ public class PowerSourceSystem extends EntityTickingSystem<ChunkStore> {
 		var source = archetypeChunk.getComponent(index, this.powerSourceComponentType);
 		var power = archetypeChunk.getComponent(index, this.powerLevelComponentType);
 		if (source == null || power == null) {
-			PowerPlugin.LOGGER.atInfo().log("Source or Power is null");
 			return;
 		}
 
-		if (source.getActive()) {
-			power.setNext(source.getOutputPower());
-		} else {
-			power.setNext(0);
-		}
+		int powerSourcePower = source.getActive() ? source.getOutputPower() : 0;
+		power.setNext(powerSourcePower);
 	}
 
 	@NullableDecl

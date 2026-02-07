@@ -1,6 +1,5 @@
 package com.pix.plugin.systems;
 
-import com.pix.plugin.components.PowerLevelComponent;
 import com.hypixel.hytale.component.*;
 import com.hypixel.hytale.component.dependency.Dependency;
 import com.hypixel.hytale.component.dependency.Order;
@@ -8,25 +7,30 @@ import com.hypixel.hytale.component.dependency.SystemDependency;
 import com.hypixel.hytale.component.query.Query;
 import com.hypixel.hytale.component.system.tick.EntityTickingSystem;
 import com.hypixel.hytale.math.util.ChunkUtil;
-import com.hypixel.hytale.math.vector.Vector3i;
+import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
 import com.hypixel.hytale.server.core.modules.block.BlockModule;
 import com.hypixel.hytale.server.core.universe.world.chunk.WorldChunk;
 import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
+import com.pix.plugin.components.PowerLevelComponent;
+import com.pix.plugin.components.PowerWireComponent;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 import org.checkerframework.checker.nullness.compatqual.NullableDecl;
 
 import java.util.Set;
 
-public class PowerPropagationSystem extends EntityTickingSystem<ChunkStore> {
+public class PowerWireStateUpdateSystem extends EntityTickingSystem<ChunkStore> {
+	private final ComponentType<ChunkStore, PowerWireComponent> powerWireComponentType;
 	private final ComponentType<ChunkStore, PowerLevelComponent> powerLevelComponentType;
 	private final Query<ChunkStore> query;
 
-	public PowerPropagationSystem(
+	public PowerWireStateUpdateSystem(
+			ComponentType<ChunkStore, PowerWireComponent> powerWireComponentType,
 			ComponentType<ChunkStore, PowerLevelComponent> powerLevelComponentType
 	) {
+		this.powerWireComponentType = powerWireComponentType;
 		this.powerLevelComponentType = powerLevelComponentType;
 		this.query = Query.and(
-				BlockModule.BlockStateInfo.getComponentType(),
+				this.powerWireComponentType,
 				this.powerLevelComponentType
 		);
 	}
@@ -50,12 +54,17 @@ public class PowerPropagationSystem extends EntityTickingSystem<ChunkStore> {
 			return;
 		}
 
-		var info = archetypeChunk.getComponent(index, BlockModule.BlockStateInfo.getComponentType());
+		var ref = archetypeChunk.getReferenceTo(index);
+		var info = store.getComponent(ref, BlockModule.BlockStateInfo.getComponentType());
 		if (info == null) {
 			return;
 		}
 
 		var chunkRef = info.getChunkRef();
+		if (!chunkRef.isValid()) {
+			return;
+		}
+
 		var worldChunk = store.getComponent(chunkRef, WorldChunk.getComponentType());
 		if (worldChunk == null) {
 			return;
@@ -65,33 +74,15 @@ public class PowerPropagationSystem extends EntityTickingSystem<ChunkStore> {
 		int y = ChunkUtil.yFromBlockInColumn(info.getIndex());
 		int z = ChunkUtil.zFromBlockInColumn(info.getIndex());
 
-		Vector3i[] directions = {
-				new Vector3i(0, 0, -1),
-				new Vector3i(0, 0, 1),
-				new Vector3i(-1, 0, 0),
-				new Vector3i(1, 0, 0)
-		};
+		int blockId = worldChunk.getBlock(x, y, z);
+		BlockType blockType = BlockType.getAssetMap().getAsset(blockId);
 
-		int maxPower = 0;
-		for (Vector3i direction : directions) {
-			var currentX = x + direction.x;
-			var currentZ = z + direction.z;
-
-			var neighborBlockRef = worldChunk.getBlockComponentEntity(currentX, y, currentZ);
-			if (neighborBlockRef == null) {
-				continue;
-			}
-
-			var neighborPower = store.getComponent(neighborBlockRef, this.powerLevelComponentType);
-			if (neighborPower == null) {
-				continue;
-			}
-
-			int neighborPropagationPower = Math.max(neighborPower.getCurrent() - 1, 0);
-			maxPower = Math.max(maxPower, neighborPropagationPower);
+		if (blockType == null) {
+			return;
 		}
 
-		power.setNext(maxPower);
+		// Inspired from BlockSetStateCommand. Is it okay?
+		worldChunk.setBlockInteractionState(x, y, z, blockType, power.getState(), true);
 	}
 
 	@NullableDecl
@@ -104,7 +95,7 @@ public class PowerPropagationSystem extends EntityTickingSystem<ChunkStore> {
 	@Override
 	public Set<Dependency<ChunkStore>> getDependencies() {
 		return Set.of(
-				new SystemDependency<>(Order.AFTER, PowerSourceSystem.class)
+				new SystemDependency<>(Order.AFTER, PowerCommitSystem.class)
 		);
 	}
 }

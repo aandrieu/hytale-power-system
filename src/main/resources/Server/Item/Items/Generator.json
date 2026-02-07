@@ -11,25 +11,33 @@
     "VariantRotation": "Debug",
     "Textures": [
       {
-        "All": "BlockTextures/Generator.png"
+        "All": "Blocks/Generator/Generator.png"
       }
     ],
-    "ParticleColor": "#0000f4"
+    "ParticleColor": "#0000f4",
+    "Gathering": {
+      "Breaking": {
+        "GatherType": "Soil",
+        "ItemId": "Generator"
+      }
+    },
+    "BlockEntity": {
+      "Components": {
+        "PowerSourceComponent": {
+          "OutputPowerLevel": 15,
+          "IsActivePower": true
+        },
+        "PowerLevelComponent": {
+          "CurrentPowerLevel": 0,
+          "NextPowerLevel": 0
+        }
+      }
+    }
   },
   "PlayerAnimationsId": "Block",
   "Tags": {
     "Type": [
       "Debug"
     ]
-  },
-  "BlockEntity": {
-    "IsBlockComponent": true,
-    "Components": {
-      "PowerSourceComponent": {
-        "OutputPowerLevel": 15,
-        "IsActivePower": true
-      },
-      "PowerLevelComponent": {}
-    }
   }
 }
